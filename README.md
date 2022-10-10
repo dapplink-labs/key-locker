@@ -35,9 +35,26 @@ go build or go install locker
 ```
 
 ### start 
-```bash
+
+#### 1. create database
+
+```
 CREATE DATABASE keylocker DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+```
+
+#### 2. build project
+
+```
+go build
+```
+
+#### 3. migrate database table
+
+```
 ./locker init
+```
+
+```bash
 ./locker start
 ```
 

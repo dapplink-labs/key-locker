@@ -57,12 +57,12 @@ go build
 #### 4. start web server
 
 ```bash
-./locker start web
+./locker web
 ```
 
 #### 5. start rpc server
 ```bash
-./locker start rpc
+./locker start 
 ```
 
 ## Contribute

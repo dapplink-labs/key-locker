@@ -25,26 +25,6 @@ type Dispatcher struct {
 	registry map[ChainType]blockchain.KeyAdaptor
 }
 
-func (d *Dispatcher) GetSupportChain(ctx context.Context, req *keylocker.SupportChainReq) (*keylocker.SupportChainRep, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (d *Dispatcher) SetSocialKey(ctx context.Context, req *keylocker.SetSocialKeyReq) (*keylocker.SetSocialKeyRep, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (d *Dispatcher) GetSocialKey(ctx context.Context, req *keylocker.GetSocialKeyReq) (*keylocker.GetSocialKeyRep, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (d *Dispatcher) mustEmbedUnimplementedLeyLockerServiceServer() {
-	//TODO implement me
-	panic("implement me")
-}
-
 func New(conf *config.Config) (*Dispatcher, error) {
 	dispatcher := Dispatcher{
 		registry: make(map[ChainType]blockchain.KeyAdaptor),
@@ -113,35 +93,35 @@ func (d *Dispatcher) preHandler(req interface{}) (resp *keylocker.SupportChainRe
 	return nil
 }
 
-func (d *Dispatcher) getSupportChain(ctx context.Context, request *keylocker.SupportChainReq) (*keylocker.SupportChainRep, error) {
-	resp := d.preHandler(request)
+func (d *Dispatcher) GetSupportChain(ctx context.Context, req *keylocker.SupportChainReq) (*keylocker.SupportChainRep, error) {
+	resp := d.preHandler(req)
 	if resp != nil {
 		return &keylocker.SupportChainRep{
 			Code: common.ReturnCode_ERROR,
 			Msg:  config.UnsupportedOperation,
 		}, nil
 	}
-	return d.registry[request.Chain].GetSupportChain(request)
+	return d.registry[req.Chain].GetSupportChain(req)
 }
 
-func (d *Dispatcher) getSocialKey(ctx context.Context, request *keylocker.GetSocialKeyReq) (*keylocker.GetSocialKeyRep, error) {
-	resp := d.preHandler(request)
-	if resp != nil {
-		return &keylocker.GetSocialKeyRep{
-			Code: common.ReturnCode_ERROR,
-			Msg:  config.UnsupportedOperation,
-		}, nil
-	}
-	return d.registry[request.Chain].GetSocialKey(request)
-}
-
-func (d *Dispatcher) setSocialKey(ctx context.Context, request *keylocker.SetSocialKeyReq) (*keylocker.SetSocialKeyRep, error) {
-	resp := d.preHandler(request)
+func (d *Dispatcher) SetSocialKey(ctx context.Context, req *keylocker.SetSocialKeyReq) (*keylocker.SetSocialKeyRep, error) {
+	resp := d.preHandler(req)
 	if resp != nil {
 		return &keylocker.SetSocialKeyRep{
 			Code: common.ReturnCode_ERROR,
 			Msg:  config.UnsupportedOperation,
 		}, nil
 	}
-	return d.registry[request.Chain].SetSocialKey(request)
+	return d.registry[req.Chain].SetSocialKey(req)
+}
+
+func (d *Dispatcher) GetSocialKey(ctx context.Context, req *keylocker.GetSocialKeyReq) (*keylocker.GetSocialKeyRep, error) {
+	resp := d.preHandler(req)
+	if resp != nil {
+		return &keylocker.GetSocialKeyRep{
+			Code: common.ReturnCode_ERROR,
+			Msg:  config.UnsupportedOperation,
+		}, nil
+	}
+	return d.registry[req.Chain].GetSocialKey(req)
 }

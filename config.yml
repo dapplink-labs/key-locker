@@ -1,3 +1,8 @@
+rpcserver:
+  port: 8089
+
+network: mainnet
+
 database:
   host: 127.0.0.1
   port: 3306
@@ -8,3 +13,12 @@ database:
 server:
   port: 8080
   debug: false
+
+fullnode:
+  eth:
+    rpcs:
+      - rpc_url: 'https://eth-mainnet.nodereal.io/v1/1659dfb40aa24bbb8153a677b98064d7'
+    confirmations: 4
+
+chains: [Bitcoin, Ethereum, Solana, Tron]
+

@@ -5,9 +5,31 @@ import (
 	"os"
 )
 
+type RPC struct {
+	RPCURL  string `yaml:"rpc_url"`
+	RPCUser string `yaml:"rpc_user"`
+	RPCPass string `yaml:"rpc_pass"`
+}
+
+type Node struct {
+	RPCs          []*RPC `yaml:"rpcs"`
+	Confirmations uint64 `yaml:"confirmations"`
+}
+
+// Fullnode define
+type Fullnode struct {
+	Eth  Node `yaml:"eth"`
+	Ipfs Node `yaml:"ipfs"`
+	Fil  Node `yaml:"fil"`
+}
+
 type Config struct {
-	Database *Database `yaml:"database"`
-	Server   *Server   `yaml:"server"`
+	Database  *Database  `yaml:"database"`
+	Fullnode  Fullnode   `yaml:"fullnode"`
+	NetWork   string     `yaml:"network"`
+	Server    *Server    `yaml:"server"`
+	RpcServer *RpcServer `yaml:"rpcserver"`
+	Chains    []string   `yaml:"chains"`
 }
 
 type Database struct {
@@ -23,6 +45,18 @@ type Server struct {
 	Debug bool `yaml:"debug"`
 }
 
+type RpcServer struct {
+	Port string `yaml:"port"`
+}
+
+type NetWorkType int
+
+const (
+	MainNet NetWorkType = iota
+	TestNet
+	RegTest
+)
+
 func LoadConfigFile(filePath string, cfg *Config) error {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -31,3 +65,6 @@ func LoadConfigFile(filePath string, cfg *Config) error {
 	defer file.Close()
 	return yaml.NewDecoder(file).Decode(cfg)
 }
+
+const UnsupportedChain = "Unsupport chain"
+const UnsupportedOperation = UnsupportedChain

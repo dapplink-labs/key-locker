@@ -1,7 +1,8 @@
 package cmd
 
 import (
-	"github.com/savour-labs/key-locker/api"
+	"github.com/savour-labs/key-locker/backend/api"
+	"github.com/savour-labs/key-locker/backend/rpc"
 	"os"
 
 	"github.com/savour-labs/key-locker/config"
@@ -30,7 +31,7 @@ func Execute() {
 
 	app.Commands = []*cli.Command{
 		{
-			Name:  "start",
+			Name:  "web",
 			Usage: "start api server",
 			Action: func(c *cli.Context) error {
 				server := api.NewServer(db.InitDB(cfg.Database), cfg.Server)
@@ -47,6 +48,14 @@ func Execute() {
 					log.WithError(err).Fatal("Failed to migrate database")
 					return err
 				}
+				return nil
+			},
+		},
+		{
+			Name:  "start",
+			Usage: "start rpc server",
+			Action: func(c *cli.Context) error {
+				rpc.StartService(&cfg)
 				return nil
 			},
 		},

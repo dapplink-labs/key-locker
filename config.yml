@@ -3,7 +3,7 @@ database:
   port: 3306
   username: root
   password: Wenwo2020!
-  database: stormchaser
+  database: keylocker
 
 server:
   port: 8080

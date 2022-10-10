@@ -36,6 +36,7 @@ go build or go install locker
 
 ### start 
 ```bash
+CREATE DATABASE keylocker DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 ./locker init
 ./locker start
 ```

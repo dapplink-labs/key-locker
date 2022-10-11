@@ -23,15 +23,11 @@ key-locker is a key manager for social recovery wallet and mpc wallet private ke
 
 **Tips**: need [Go 1.18+](https://golang.org/dl/)
 
-## Install
+## Install and Build
 
-### Install dependencies
-```bash
-go mod tidy
-```
 ### build
 ```bash
-go build or go install locker
+make key-locker
 ```
 
 ### start 

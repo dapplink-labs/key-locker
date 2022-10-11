@@ -44,9 +44,25 @@ func (a *KeyAdaptor) getClient() *ethClient {
 	return a.clients.BestClient().(*ethClient)
 }
 
+func (a *KeyAdaptor) GetSupportChain(req *keylocker.SupportChainReq) (*keylocker.SupportChainRep, error) {
+	return &keylocker.SupportChainRep{
+		Code: common.ReturnCode_SUCCESS,
+		Msg:  "get support chain success",
+	}, nil
+}
+
 func (a *KeyAdaptor) GetSocialKey(req *keylocker.GetSocialKeyReq) (*keylocker.GetSocialKeyRep, error) {
+	// todo: 实现通过调用合约 get key
 	return &keylocker.GetSocialKeyRep{
 		Code: common.ReturnCode_SUCCESS,
 		Msg:  "get social key success",
+	}, nil
+}
+
+func (a *KeyAdaptor) SetSocialKey(req *keylocker.SetSocialKeyReq) (*keylocker.SetSocialKeyRep, error) {
+	// todo: 实现通过调用合约 set key
+	return &keylocker.SetSocialKeyRep{
+		Code: common.ReturnCode_SUCCESS,
+		Msg:  "set social key success",
 	}, nil
 }

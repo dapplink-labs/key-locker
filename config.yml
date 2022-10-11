@@ -20,5 +20,5 @@ fullnode:
       - rpc_url: 'https://eth-mainnet.nodereal.io/v1/1659dfb40aa24bbb8153a677b98064d7'
     confirmations: 4
 
-chains: [Bitcoin, Ethereum, Solana, Tron]
+chains: [Bitcoin, Ipfs, Filcoin]
 

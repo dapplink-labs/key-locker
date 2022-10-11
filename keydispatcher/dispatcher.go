@@ -5,6 +5,8 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/savour-labs/key-locker/blockchain"
 	"github.com/savour-labs/key-locker/blockchain/ethereum"
+	"github.com/savour-labs/key-locker/blockchain/filecoin"
+	"github.com/savour-labs/key-locker/blockchain/ipfs"
 	"github.com/savour-labs/key-locker/config"
 	"github.com/savour-labs/key-locker/proto/common"
 	"github.com/savour-labs/key-locker/proto/keylocker"
@@ -31,8 +33,10 @@ func New(conf *config.Config) (*Dispatcher, error) {
 	}
 	keyAdaptorFactoryMap := map[string]func(conf *config.Config) (blockchain.KeyAdaptor, error){
 		ethereum.ChainName: ethereum.NewChainAdaptor,
+		ipfs.ChainName:     ipfs.NewChainAdaptor,
+		filecoin.ChainName: filecoin.NewChainAdaptor,
 	}
-	supportedChains := []string{ethereum.ChainName}
+	supportedChains := []string{ethereum.ChainName, ipfs.ChainName, filecoin.ChainName}
 	for _, c := range conf.Chains {
 		if factory, ok := keyAdaptorFactoryMap[c]; ok {
 			adaptor, err := factory(conf)
@@ -54,8 +58,10 @@ func NewLocal(network config.NetWorkType) *Dispatcher {
 
 	walletAdaptorFactoryMap := map[string]func(network config.NetWorkType) blockchain.KeyAdaptor{
 		ethereum.ChainName: ethereum.NewLocalKeyAdaptor,
+		ipfs.ChainName:     ipfs.NewLocalKeyAdaptor,
+		filecoin.ChainName: filecoin.NewLocalKeyAdaptor,
 	}
-	supportedChains := []string{ethereum.ChainName}
+	supportedChains := []string{ethereum.ChainName, ipfs.ChainName, filecoin.ChainName}
 	for _, c := range supportedChains {
 		if factory, ok := walletAdaptorFactoryMap[c]; ok {
 			dispatcher.registry[c] = factory(network)

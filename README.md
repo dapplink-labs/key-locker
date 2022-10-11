@@ -23,42 +23,41 @@ key-locker is a key manager for social recovery wallet and mpc wallet private ke
 
 **Tips**: need [Go 1.18+](https://golang.org/dl/)
 
-## Install and Build
-
-### build
-```bash
-make key-locker
-```
-
-### start 
-
-#### 1. create database
+## 1.create database
 
 ```
 CREATE DATABASE keylocker DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 ```
 
-#### 2. build project
+## 2.install and build
+
+#### 1. build project
 
 ```
-go build
+make key-locker
 ```
 
-#### 3. migrate database table
+#### 2. migrate database table
 
 ```
-./locker init
+./key-locker init
 ```
 
-#### 4. start web server
+#### 3. start web server
 
 ```bash
-./locker web
+./key-locker web
 ```
 
-#### 5. start rpc server
+#### 4. start rpc server
 ```bash
-./locker start 
+./key-locker start 
+```
+
+#### 5. start the RPC interface test interface
+
+```
+grpcui -plaintext 127.0.0.1:8089
 ```
 
 ## Contribute

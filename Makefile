@@ -9,7 +9,7 @@ LDFLAGSSTRING +=-X main.GitDate=$(GITDATE)
 LDFLAGSSTRING +=-X main.GitVersion=$(GITVERSION)
 LDFLAGS :=-ldflags "$(LDFLAGSSTRING)"
 
-CONTRACTS_PATH := "../packages/key-contracts/artifacts/contracts"
+CONTRACTS_PATH := "./packages/key-contract/artifacts/contracts"
 
 key-locker:
 	env GO111MODULE=on go build $(LDFLAGS)
@@ -27,19 +27,19 @@ lint:
 abi:
 	cat $(CONTRACTS_PATH)/KeyLocker.sol/KeyLocker.json \
 		| jq '{abi,bytecode}' \
-		> abis/KeyLocker.json
+		> packages/key-contract/abis/KeyLocker.json
 
 binding: abi
 	$(eval temp := $(shell mktemp))
 
-	cat abis/KeyLocker.json \
+	cat packages/key-contract/abis/KeyLocker.json \
 		| jq -r .bytecode > $(temp)
 
-	cat abis/KeyLocker.json \
+	cat packages/key-contract/abis/KeyLocker.json \
 		| jq .abi \
 		| abigen --pkg bindings \
 		--abi - \
-		--out bindings/keylocker.go \
+		--out blockchain/ethereum/bindings/keylocker.go \
 		--type ethereum \
 		--bin $(temp)
 

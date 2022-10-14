@@ -1,18 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >0.5.0 <0.9.0;
 
-contract KeyLocker {
-    mapping(bytes => bytes[]) public socialKeys;
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
 
-    event keyLockerAppend(uint256 _uuid, bytes[] _keys);
+contract KeyLocker is OwnableUpgradeable {
+    using ECDSAUpgradeable for bytes32;
+
+    mapping(bytes32 => bytes[]) public socialKeys;
+
+    event keyLockerAppend(bytes32 _uuid, bytes[] _keys);
 
     function initialize() public initializer {
         __Ownable_init();
     }
 
-    function setSocialKey(bytes _uuid, bytes[] memory _keys)
+    function setSocialKey(bytes32 _uuid, bytes[] memory _keys)
     public
-    override
     onlyOwner
     {
         require((_keys.length > 0), "keys is empty");
@@ -20,12 +24,11 @@ contract KeyLocker {
         emit keyLockerAppend(_uuid, _keys);
     }
 
-    function getSocialKey(bytes _uuid)
+    function getSocialKey(bytes32 _uuid)
     public
     view
-    override
     returns (
-        bytes[] _keys
+        bytes[] memory
     )
     {
         return  socialKeys[_uuid];

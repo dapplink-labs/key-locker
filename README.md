@@ -12,7 +12,7 @@ parent:
     <img alt="Version" src="https://img.shields.io/github/tag/savour-labs/key-locker.svg" />
   </a>
   <a href="https://github.com/savour-labs/key-locker/blob/main/LICENSE">
-    <img alt="License: Apache-2.0" src="https://img.shields.io/github/license/savour-labs/key-lockersvg" />
+    <img alt="License: Apache-2.0" src="https://img.shields.io/github/license/savour-labs/key-locker.svg" />
   </a>
   <a href="https://pkg.go.dev/github.com/savour-labs/key-locker">
     <img alt="GoDoc" src="https://godoc.org/github.com/savour-labs/key-locker?status.svg" />

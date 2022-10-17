@@ -1,8 +1,9 @@
 package config
 
 import (
-	"gopkg.in/yaml.v2"
 	"os"
+
+	"gopkg.in/yaml.v2"
 )
 
 type RPC struct {
@@ -30,6 +31,7 @@ type Config struct {
 	Server    *Server    `yaml:"server"`
 	RpcServer *RpcServer `yaml:"rpcserver"`
 	Chains    []string   `yaml:"chains"`
+	Ipfs      *Ipfs      `yaml:"ipfs"`
 }
 
 type Database struct {
@@ -47,6 +49,11 @@ type Server struct {
 
 type RpcServer struct {
 	Port string `yaml:"port"`
+}
+
+type Ipfs struct {
+	NetworkNode []string `yaml:"network_node"`
+	RepoPath    string   `yaml:"repo_path"`
 }
 
 type NetWorkType int

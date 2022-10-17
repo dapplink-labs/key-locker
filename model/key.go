@@ -5,8 +5,16 @@ import (
 )
 
 type Key struct {
+	KeySecret string `gorm:"type:text;description:KeySecret; comment: uid的rsa私钥"    json:"key_secret"`
+	KeyCID    string `gorm:"type:varchar(256);;description:KeyCID; comment: key对应的ipfs CID"    json:"key_cid"`
+	KeyUuid   string `gorm:"index;type:varchar(256);description:KeyUuid; comment: 用户ID"    json:"key_uuid"`
 	*gorm.Model
-	ID        uint64 `gorm:"primary_key; description:ID"                    json:"id"`
-	KeySecret string `gorm:"index;type:varchar(256);description:KeySecret"  json:"key_secret"` // 私钥分片加密
-	KeyUuid   string `gorm:"type:varchar(256);description:KeyUuid"          json:"key_uuid"`
+}
+
+type Repo struct {
+	DB *gorm.DB
+}
+
+func NewRepo(db *gorm.DB) *Repo {
+	return &Repo{DB: db}
 }

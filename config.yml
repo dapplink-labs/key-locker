@@ -22,3 +22,6 @@ fullnode:
 
 chains: [Bitcoin, Ipfs, Filcoin]
 
+ipfs:
+  network_node: ["/ip4/127.0.0.1/tcp/4001/p2p/12D3KooWLXzGF1pXMYsNgv7yCGKdRwPqF2WAuqJwNFWvP2h3fNSp"]
+  repo_path: "/var/folders/s3/n3prrqcs7gqcv0yjtwv2jzx80000gp/T/ipfs-shell1796713389"

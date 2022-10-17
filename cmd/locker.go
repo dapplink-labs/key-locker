@@ -1,9 +1,10 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/savour-labs/key-locker/backend/api"
 	"github.com/savour-labs/key-locker/backend/rpc"
-	"os"
 
 	"github.com/savour-labs/key-locker/config"
 	"github.com/savour-labs/key-locker/db"
@@ -44,7 +45,7 @@ func Execute() {
 			Usage: "migrate database",
 			Action: func(c *cli.Context) error {
 				dba := db.InitDB(cfg.Database)
-				if err := dba.AutoMigrate(&model.Key{}); err != nil {
+				if err := dba.AutoMigrate(&model.Key{}, &model.Secret{}); err != nil {
 					log.WithError(err).Fatal("Failed to migrate database")
 					return err
 				}

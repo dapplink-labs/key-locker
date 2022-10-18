@@ -1,6 +1,8 @@
 package filecoin
 
 import (
+	"context"
+
 	"github.com/savour-labs/key-locker/blockchain"
 	"github.com/savour-labs/key-locker/blockchain/fallback"
 	"github.com/savour-labs/key-locker/blockchain/multiclient"
@@ -43,7 +45,7 @@ func (a *KeyAdaptor) GetSupportChain(req *keylocker.SupportChainReq) (*keylocker
 	}, nil
 }
 
-func (a *KeyAdaptor) GetSocialKey(req *keylocker.GetSocialKeyReq) (*keylocker.GetSocialKeyRep, error) {
+func (a *KeyAdaptor) GetSocialKey(ctx context.Context, req *keylocker.GetSocialKeyReq) (*keylocker.GetSocialKeyRep, error) {
 	// todo: 调用 filcoin 接口获取 Social Key
 	return &keylocker.GetSocialKeyRep{
 		Code: common.ReturnCode_SUCCESS,
@@ -51,7 +53,7 @@ func (a *KeyAdaptor) GetSocialKey(req *keylocker.GetSocialKeyReq) (*keylocker.Ge
 	}, nil
 }
 
-func (a *KeyAdaptor) SetSocialKey(req *keylocker.SetSocialKeyReq) (*keylocker.SetSocialKeyRep, error) {
+func (a *KeyAdaptor) SetSocialKey(ctx context.Context, req *keylocker.SetSocialKeyReq) (*keylocker.SetSocialKeyRep, error) {
 	// todo: 调用 filcoin 接口上传 Social Key
 	return &keylocker.SetSocialKeyRep{
 		Code: common.ReturnCode_SUCCESS,

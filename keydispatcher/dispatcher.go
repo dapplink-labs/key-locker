@@ -2,6 +2,9 @@ package keydispatcher
 
 import (
 	"context"
+	"runtime/debug"
+	"strings"
+
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/savour-labs/key-locker/blockchain"
 	"github.com/savour-labs/key-locker/blockchain/ethereum"
@@ -13,8 +16,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"runtime/debug"
-	"strings"
 )
 
 type CommonRequest interface {
@@ -118,7 +119,7 @@ func (d *Dispatcher) SetSocialKey(ctx context.Context, req *keylocker.SetSocialK
 			Msg:  config.UnsupportedOperation,
 		}, nil
 	}
-	return d.registry[req.Chain].SetSocialKey(req)
+	return d.registry[req.Chain].SetSocialKey(ctx, req)
 }
 
 func (d *Dispatcher) GetSocialKey(ctx context.Context, req *keylocker.GetSocialKeyReq) (*keylocker.GetSocialKeyRep, error) {
@@ -129,5 +130,5 @@ func (d *Dispatcher) GetSocialKey(ctx context.Context, req *keylocker.GetSocialK
 			Msg:  config.UnsupportedOperation,
 		}, nil
 	}
-	return d.registry[req.Chain].GetSocialKey(req)
+	return d.registry[req.Chain].GetSocialKey(ctx, req)
 }

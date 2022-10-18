@@ -10,6 +10,8 @@ LDFLAGSSTRING +=-X main.GitVersion=$(GITVERSION)
 LDFLAGS :=-ldflags "$(LDFLAGSSTRING)"
 
 CONTRACTS_PATH := "./packages/key-contract/artifacts/contracts"
+GENPATH := "./proto/common"
+COMMONPATH := "github.com/savour-labs/key-locker/proto/common"
 
 PWD := $(shell pwd)
 

@@ -1,5 +1,5 @@
 rpcserver:
-  port: 8089
+  port: 8189
 
 network: mainnet
 
@@ -11,7 +11,7 @@ database:
   database: keylocker
 
 server:
-  port: 8080
+  port: 8081
   debug: false
 
 fullnode:

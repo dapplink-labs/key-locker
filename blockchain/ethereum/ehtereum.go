@@ -7,7 +7,6 @@ import (
 	"github.com/savour-labs/key-locker/blockchain/fallback"
 	"github.com/savour-labs/key-locker/blockchain/multiclient"
 	"github.com/savour-labs/key-locker/config"
-	"github.com/savour-labs/key-locker/proto/common"
 	"github.com/savour-labs/key-locker/proto/keylocker"
 )
 
@@ -48,7 +47,7 @@ func (a *KeyAdaptor) getClient() *ethClient {
 
 func (a *KeyAdaptor) GetSupportChain(req *keylocker.SupportChainReq) (*keylocker.SupportChainRep, error) {
 	return &keylocker.SupportChainRep{
-		Code: common.ReturnCode_SUCCESS,
+		Code: keylocker.ReturnCode_SUCCESS,
 		Msg:  "get support chain success",
 	}, nil
 }
@@ -56,7 +55,7 @@ func (a *KeyAdaptor) GetSupportChain(req *keylocker.SupportChainReq) (*keylocker
 func (a *KeyAdaptor) GetSocialKey(ctx context.Context, req *keylocker.GetSocialKeyReq) (*keylocker.GetSocialKeyRep, error) {
 	// todo: 实现通过调用合约 get key
 	return &keylocker.GetSocialKeyRep{
-		Code: common.ReturnCode_SUCCESS,
+		Code: keylocker.ReturnCode_SUCCESS,
 		Msg:  "get social key success",
 	}, nil
 }
@@ -64,7 +63,7 @@ func (a *KeyAdaptor) GetSocialKey(ctx context.Context, req *keylocker.GetSocialK
 func (a *KeyAdaptor) SetSocialKey(ctx context.Context, req *keylocker.SetSocialKeyReq) (*keylocker.SetSocialKeyRep, error) {
 	// todo: 实现通过调用合约 set key
 	return &keylocker.SetSocialKeyRep{
-		Code: common.ReturnCode_SUCCESS,
+		Code: keylocker.ReturnCode_SUCCESS,
 		Msg:  "set social key success",
 	}, nil
 }

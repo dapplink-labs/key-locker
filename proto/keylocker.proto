@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+option go_package ="./proto/keylocker";
+option java_package = "group.savour.keylocker";
+package savourrpc.keylocker;
+
+enum ReturnCode{
+  SUCCESS = 0;
+  ERROR = 1;
+}
+
+message SocialKey {
+    string id = 1;
+    string key = 3;
+}
+
+message SupportChainReq{
+  string consumer_token = 1;
+  string chain = 2;
+  string network = 3;
+}
+
+message SupportChainRep {
+   ReturnCode code=1;
+   string msg=2;
+   bool support = 3;
+}
+
+message SetSocialKeyReq {
+   string consumer_token = 1;
+   string chain = 2;
+   string uuid = 3;
+   string key = 4;
+   string password = 5;
+}
+
+message SetSocialKeyRep {
+    ReturnCode code=1;
+    string msg=2;
+    string pub = 3;
+    string priv = 4;
+    string crypto_way = 5;
+    string file_cid = 6;
+    string contract = 7;
+}
+
+message GetSocialKeyReq {
+   string consumer_token = 1;
+   string chain = 2;
+   string uuid = 3;
+   string file_cid = 4;
+   string contract = 5;
+}
+
+message GetSocialKeyRep {
+    ReturnCode code=1;
+    string msg=2;
+    repeated SocialKey key_list = 3;
+}
+
+service LeyLockerService {
+  rpc getSupportChain(SupportChainReq) returns (SupportChainRep) {}
+  rpc setSocialKey(SetSocialKeyReq) returns (SetSocialKeyRep) {}
+  rpc getSocialKey(GetSocialKeyReq) returns (GetSocialKeyRep) {}
+}

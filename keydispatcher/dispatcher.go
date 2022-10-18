@@ -11,7 +11,6 @@ import (
 	"github.com/savour-labs/key-locker/blockchain/filecoin"
 	"github.com/savour-labs/key-locker/blockchain/ipfs"
 	"github.com/savour-labs/key-locker/config"
-	"github.com/savour-labs/key-locker/proto/common"
 	"github.com/savour-labs/key-locker/proto/keylocker"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -92,7 +91,7 @@ func (d *Dispatcher) preHandler(req interface{}) (resp *keylocker.SupportChainRe
 	chain := req.(CommonRequest).GetChain()
 	if _, ok := d.registry[chain]; !ok {
 		return &keylocker.SupportChainRep{
-			Code:    common.ReturnCode_ERROR,
+			Code:    keylocker.ReturnCode_ERROR,
 			Msg:     config.UnsupportedOperation,
 			Support: false,
 		}
@@ -104,7 +103,7 @@ func (d *Dispatcher) GetSupportChain(ctx context.Context, req *keylocker.Support
 	resp := d.preHandler(req)
 	if resp != nil {
 		return &keylocker.SupportChainRep{
-			Code: common.ReturnCode_ERROR,
+			Code: keylocker.ReturnCode_ERROR,
 			Msg:  config.UnsupportedOperation,
 		}, nil
 	}
@@ -115,7 +114,7 @@ func (d *Dispatcher) SetSocialKey(ctx context.Context, req *keylocker.SetSocialK
 	resp := d.preHandler(req)
 	if resp != nil {
 		return &keylocker.SetSocialKeyRep{
-			Code: common.ReturnCode_ERROR,
+			Code: keylocker.ReturnCode_ERROR,
 			Msg:  config.UnsupportedOperation,
 		}, nil
 	}
@@ -126,7 +125,7 @@ func (d *Dispatcher) GetSocialKey(ctx context.Context, req *keylocker.GetSocialK
 	resp := d.preHandler(req)
 	if resp != nil {
 		return &keylocker.GetSocialKeyRep{
-			Code: common.ReturnCode_ERROR,
+			Code: keylocker.ReturnCode_ERROR,
 			Msg:  config.UnsupportedOperation,
 		}, nil
 	}

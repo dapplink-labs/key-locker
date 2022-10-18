@@ -12,7 +12,6 @@ import (
 	"github.com/savour-labs/key-locker/crypto"
 	"github.com/savour-labs/key-locker/db"
 	"github.com/savour-labs/key-locker/model"
-	"github.com/savour-labs/key-locker/proto/common"
 	"github.com/savour-labs/key-locker/proto/keylocker"
 	"gorm.io/gorm"
 )
@@ -55,7 +54,7 @@ func (a *KeyAdaptor) getClient() {
 
 func (a *KeyAdaptor) GetSupportChain(req *keylocker.SupportChainReq) (*keylocker.SupportChainRep, error) {
 	return &keylocker.SupportChainRep{
-		Code: common.ReturnCode_SUCCESS,
+		Code: keylocker.ReturnCode_SUCCESS,
 		Msg:  "get support chain success",
 	}, nil
 }
@@ -89,7 +88,7 @@ func (a *KeyAdaptor) GetSocialKey(ctx context.Context, req *keylocker.GetSocialK
 	}
 
 	return &keylocker.GetSocialKeyRep{
-		Code: common.ReturnCode_SUCCESS,
+		Code: keylocker.ReturnCode_SUCCESS,
 		Msg:  "get ipfs social key success",
 		KeyList: []*keylocker.SocialKey{&keylocker.SocialKey{
 			Id:  "",
@@ -153,7 +152,7 @@ func (a *KeyAdaptor) SetSocialKey(ctx context.Context, req *keylocker.SetSocialK
 	}
 
 	return &keylocker.SetSocialKeyRep{
-		Code:    common.ReturnCode_SUCCESS,
+		Code:    keylocker.ReturnCode_SUCCESS,
 		Msg:     "set ipfs social key success",
 		Pub:     pub,
 		Priv:    pri,

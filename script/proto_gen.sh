@@ -24,7 +24,7 @@ else
     export GOBIN=$GOPATH/bin
     export PATH=$PATH:$GOPATH/bin
 
-    protoc -I ./ --go_out=./ --go-grpc_out=./ savour-proto/savourrpc/keylocker.proto
+    protoc -I ./ --go_out=./ --go-grpc_out=./ proto/keylocker.proto
 
     exit_if $?
     echo Done

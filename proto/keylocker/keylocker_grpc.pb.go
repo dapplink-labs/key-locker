@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.19.1
-// source: savour-proto/savourrpc/keylocker.proto
+// source: proto/keylocker.proto
 
 package keylocker
 
@@ -84,6 +84,7 @@ func (UnimplementedLeyLockerServiceServer) SetSocialKey(context.Context, *SetSoc
 func (UnimplementedLeyLockerServiceServer) GetSocialKey(context.Context, *GetSocialKeyReq) (*GetSocialKeyRep, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSocialKey not implemented")
 }
+func (UnimplementedLeyLockerServiceServer) mustEmbedUnimplementedLeyLockerServiceServer() {}
 
 // UnsafeLeyLockerServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to LeyLockerServiceServer will
@@ -171,5 +172,5 @@ var LeyLockerService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "savour-proto/savourrpc/keylocker.proto",
+	Metadata: "proto/keylocker.proto",
 }

@@ -11,6 +11,9 @@ LDFLAGS :=-ldflags "$(LDFLAGSSTRING)"
 
 CONTRACTS_PATH := "./packages/key-contract/artifacts/contracts"
 
+PWD := $(shell pwd)
+
+
 key-locker:
 	env GO111MODULE=on go build $(LDFLAGS)
 .PHONY: key-locker
@@ -45,5 +48,6 @@ binding: abi
 
 	rm $(temp)
 
-gen:
-  sh
+gen :$PWD
+	sh ./script/proto_gen.sh
+$PWD:

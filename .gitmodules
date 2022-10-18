@@ -1,0 +1,3 @@
+[submodule "savour-proto"]
+	path = savour-proto
+	url = https://github.com/savour-labs/savour-proto.git

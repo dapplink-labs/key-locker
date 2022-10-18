@@ -44,3 +44,6 @@ binding: abi
 		--bin $(temp)
 
 	rm $(temp)
+
+gen:
+  sh

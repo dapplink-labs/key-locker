@@ -16,12 +16,18 @@ server:
 
 fullnode:
   eth:
-    rpcs:
-      - rpc_url: 'https://eth-mainnet.nodereal.io/v1/1659dfb40aa24bbb8153a677b98064d7'
+    rpc_url: 'https://eth-mainnet.nodereal.io/v1/1659dfb40aa24bbb8153a677b98064d7'
+    rpc_user: ''
+    rpc_pass: ''
+    key_locker_addr: ''
+    wallet_addr: ''
+    wallet_priv: ''
+    time_out: ''
     confirmations: 4
+
+  ipfs:
+    network_node: ["/ip4/127.0.0.1/tcp/4001/p2p/12D3KooWLXzGF1pXMYsNgv7yCGKdRwPqF2WAuqJwNFWvP2h3fNSp"]
+    repo_path: "/var/folders/s3/n3prrqcs7gqcv0yjtwv2jzx80000gp/T/ipfs-shell1796713389"
 
 chains: [Bitcoin, Ipfs, Filcoin]
 
-ipfs:
-  network_node: ["/ip4/127.0.0.1/tcp/4001/p2p/12D3KooWLXzGF1pXMYsNgv7yCGKdRwPqF2WAuqJwNFWvP2h3fNSp"]
-  repo_path: "/var/folders/s3/n3prrqcs7gqcv0yjtwv2jzx80000gp/T/ipfs-shell1796713389"

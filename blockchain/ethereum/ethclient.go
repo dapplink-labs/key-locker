@@ -2,134 +2,155 @@ package ethereum
 
 import (
 	"context"
-	"errors"
-	"math/big"
-	"net"
-	"strings"
-	"sync"
-	"time"
-
+	"crypto/ecdsa"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/params"
+	"github.com/savour-labs/key-locker/blockchain/ethereum/bindings"
 	"github.com/savour-labs/key-locker/config"
+	"math/big"
+	"strings"
+	"time"
 )
 
-var (
-	blockNumberCacheTime int64 = 10 // seconds
+const (
+	UuidSize     = 32
+	TaskInterval = 12
 )
 
-type Client interface {
-	bind.ContractBackend
-	BalanceAt(context.Context, common.Address, *big.Int) (*big.Int, error)
-	TransactionByHash(context.Context, common.Hash) (*types.Transaction, bool, error)
-	BlockByNumber(context.Context, *big.Int) (*types.Block, error)
-	TransactionReceipt(context.Context, common.Hash) (*types.Receipt, error)
-	NonceAt(context.Context, common.Address, *big.Int) (uint64, error)
+type KeyLockerClient struct {
+	context               context.Context
+	walletAddress         common.Address
+	ethClient             *ethclient.Client
+	klContract            *bindings.KeyLocker
+	ChainID               *big.Int
+	PrivKey               *ecdsa.PrivateKey
+	confirmReceiptTimeout time.Duration
+	confirmations         int64
 }
 
-type ethClient struct {
-	Client
-	chainConfig      *params.ChainConfig
-	cacheBlockNumber *big.Int
-	cacheTime        int64
-	rw               sync.RWMutex
-	confirmations    uint64
-	local            bool
-}
-
-func (client *ethClient) GetLatestBlockHeight() (int64, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-// newEthClient init the eth client
-func newEthClients(conf *config.Config) ([]*ethClient, error) {
-	chainConfig := params.RopstenChainConfig
+func NewKeyLockerClient(conf *config.Config) (*KeyLockerClient, error) {
+	chainConfig := params.GoerliChainConfig
 	if conf.NetWork == "mainnet" {
 		chainConfig = params.MainnetChainConfig
 	} else if conf.NetWork == "regtest" {
 		chainConfig = params.AllCliqueProtocolChanges
 	}
 	log.Info("eth client setup", "chain_id", chainConfig.ChainID.Int64(), "network", conf.NetWork)
-
-	var clients []*ethClient
-	for _, rpc := range conf.Fullnode.Eth.RPCs {
-		client := &ethClient{
-			chainConfig:   chainConfig,
-			confirmations: conf.Fullnode.Eth.Confirmations,
-		}
-		rpcURL := rpc.RPCURL
-		domain := strings.TrimPrefix(rpc.RPCURL, "http://")
-		domain = strings.TrimPrefix(domain, "https://")
-		if strings.Contains(domain, ":") {
-			words := strings.Split(domain, ":")
-			ipAddr, err := net.ResolveIPAddr("ip", words[0])
-			if err != nil {
-				log.Error("resolve eth domain failed", "url", rpc.RPCURL)
-				continue
-			}
-			log.Info("ethclient setup client", "ip", ipAddr)
-			rpcURL = strings.Replace(rpc.RPCURL, words[0], ipAddr.String(), 1)
-		}
-		var err error
-		client.Client, err = ethclient.Dial(rpcURL)
-		if err != nil {
-			log.Error("ethclient dial failed", "err", err)
-			continue
-		}
-		clients = append(clients, client)
-	}
-	if len(clients) == 0 {
-		return nil, errors.New("No clients available")
-	}
-	return clients, nil
-}
-
-func newLocalEthClient(network config.NetWorkType) *ethClient {
-	var para *params.ChainConfig
-	switch network {
-	case config.MainNet:
-		para = params.MainnetChainConfig
-	case config.TestNet:
-		para = params.RopstenChainConfig
-	case config.RegTest:
-		para = params.AllCliqueProtocolChanges
-	default:
-		panic("unsupported network type")
-	}
-	return &ethClient{
-		Client:           &ethclient.Client{},
-		chainConfig:      para,
-		cacheBlockNumber: nil,
-		local:            true,
-	}
-}
-
-func (client *ethClient) blockNumber() *big.Int {
-	now := time.Now().Unix()
-	client.rw.RLock()
-	if now-client.cacheTime < blockNumberCacheTime {
-		number := client.cacheBlockNumber
-		client.rw.RUnlock()
-		return number
-	}
-	client.rw.RUnlock()
-
-	client.rw.Lock()
-	defer client.rw.Unlock()
-	if now-client.cacheTime < blockNumberCacheTime {
-		return client.cacheBlockNumber
-	}
-	latestBlock, err := client.BlockByNumber(context.Background(), nil)
+	client, err := ethclient.Dial(conf.Fullnode.Eth.RPCURL)
+	klContract, err := bindings.NewKeyLocker(
+		common.HexToAddress(conf.Fullnode.Eth.KeyLockerAddr),
+		client,
+	)
 	if err != nil {
-		log.Error("get BlockByNumber failed", "error", err)
-		return nil
+		return nil, err
 	}
-	client.cacheBlockNumber = latestBlock.Number()
-	client.cacheTime = now
-	return client.cacheBlockNumber
+	hex := strings.TrimPrefix(conf.Fullnode.Eth.WalletPriv, "0x")
+	priv, err := crypto.HexToECDSA(hex)
+	if err != nil {
+		return nil, err
+	}
+	return &KeyLockerClient{
+		context:               context.Background(),
+		walletAddress:         common.HexToAddress(conf.Fullnode.Eth.WalletAddr),
+		ethClient:             client,
+		klContract:            klContract,
+		ChainID:               chainConfig.ChainID,
+		PrivKey:               priv,
+		confirmReceiptTimeout: time.Duration(conf.Fullnode.Eth.TimeOut),
+		confirmations:         conf.Fullnode.Eth.Confirmations,
+	}, nil
+}
+
+func (kl KeyLockerClient) AppendSocialKey(uuid [UuidSize]byte, keys [][]byte) error {
+	nonce64, err := kl.ethClient.NonceAt(
+		kl.context, kl.walletAddress, nil,
+	)
+	if err != nil {
+		log.Error("can not to get current nonce", "err", err)
+		return err
+	}
+	nonce := new(big.Int).SetUint64(nonce64)
+	gasPrice, err := kl.ethClient.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Error("cannot fetch gas price")
+		return err
+	}
+	opts, err := bind.NewKeyedTransactorWithChainID(
+		kl.PrivKey, kl.ChainID,
+	)
+	opts.Context = kl.context
+	opts.Nonce = nonce
+	opts.NoSend = true
+	opts.GasPrice = gasPrice
+	tx, err := kl.klContract.SetSocialKey(opts, uuid, keys)
+	if err != nil {
+		log.Error("can not to set social key")
+		return err
+	}
+	if err := kl.ethClient.SendTransaction(kl.context, tx); err != nil {
+		log.Error("can not to send transaction to l1 chain")
+		return err
+	}
+	confirmTxReceipt := func(txHash common.Hash) *types.Receipt {
+		ctx, cancel := context.WithTimeout(context.Background(), kl.confirmReceiptTimeout)
+		queryTicker := time.NewTicker(TaskInterval)
+		defer func() {
+			cancel()
+			queryTicker.Stop()
+		}()
+		for {
+			receipt, err := kl.ethClient.TransactionReceipt(context.Background(), txHash)
+			switch {
+			case receipt != nil:
+				txHeight := receipt.BlockNumber.Uint64()
+				tipHeight, err := kl.ethClient.BlockNumber(context.Background())
+				if err != nil {
+					log.Error("can not to fetch block number", "err", err)
+					break
+				}
+				log.Info("Transaction mined, checking confirmations",
+					"txHash", txHash, "txHeight", txHeight,
+					"tipHeight", tipHeight,
+					"numConfirmations", kl.confirmations)
+				if txHeight+uint64(kl.confirmations) < tipHeight {
+					reverted := receipt.Status == 0
+					log.Info("Transaction confirmed",
+						"txHash", txHash,
+						"reverted", reverted)
+					return receipt
+				}
+			case err != nil:
+				log.Error("failed to query receipt for transaction", "txHash", txHash.String())
+			default:
+			}
+			select {
+			case <-ctx.Done():
+				return nil
+			case <-queryTicker.C:
+			}
+		}
+	}
+	go confirmTxReceipt(tx.Hash())
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (kl KeyLockerClient) QuerySocialKey(uuid [UuidSize]byte) ([][]byte, error) {
+	keys, err := kl.klContract.GetSocialKey(&bind.CallOpts{
+		Pending: false,
+		Context: kl.context,
+	}, uuid)
+	if err != nil {
+		log.Error("can not to get social key")
+		return nil, err
+	}
+	return keys, nil
 }

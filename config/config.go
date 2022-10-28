@@ -12,16 +12,21 @@ type RPC struct {
 	RPCPass string `yaml:"rpc_pass"`
 }
 
-type Node struct {
-	RPCs          []*RPC `yaml:"rpcs"`
-	Confirmations uint64 `yaml:"confirmations"`
+type Eth struct {
+	RPCURL        string `yaml:"rpc_url"`
+	RPCUser       string `yaml:"rpc_user"`
+	RPCPass       string `yaml:"rpc_pass"`
+	KeyLockerAddr string `yaml:"key_locker_addr"`
+	WalletAddr    string `yaml:"wallet_addr"`
+	WalletPriv    string `yaml:"wallet_priv"`
+	TimeOut       int64  `yaml:"time_out"`
+	Confirmations int64  `yaml:"confirmations"`
 }
 
 // Fullnode define
 type Fullnode struct {
-	Eth  Node `yaml:"eth"`
-	Ipfs Node `yaml:"ipfs"`
-	Fil  Node `yaml:"fil"`
+	Eth  *Eth  `yaml:"eth"`
+	Ipfs *Ipfs `yaml:"ipfs"`
 }
 
 type Config struct {
@@ -31,7 +36,6 @@ type Config struct {
 	Server    *Server    `yaml:"server"`
 	RpcServer *RpcServer `yaml:"rpcserver"`
 	Chains    []string   `yaml:"chains"`
-	Ipfs      *Ipfs      `yaml:"ipfs"`
 }
 
 type Database struct {

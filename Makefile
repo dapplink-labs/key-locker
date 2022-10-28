@@ -45,7 +45,7 @@ binding: abi
 		| abigen --pkg bindings \
 		--abi - \
 		--out blockchain/ethereum/bindings/keylocker.go \
-		--type ethereum \
+		--type KeyLocker \
 		--bin $(temp)
 
 	rm $(temp)

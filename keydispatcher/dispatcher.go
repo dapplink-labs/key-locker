@@ -51,25 +51,6 @@ func New(conf *config.Config) (*Dispatcher, error) {
 	return &dispatcher, nil
 }
 
-func NewLocal(network config.NetWorkType) *Dispatcher {
-	dispatcher := Dispatcher{
-		registry: make(map[ChainType]blockchain.KeyAdaptor),
-	}
-
-	walletAdaptorFactoryMap := map[string]func(network config.NetWorkType) blockchain.KeyAdaptor{
-		ethereum.ChainName: ethereum.NewLocalKeyAdaptor,
-		ipfs.ChainName:     ipfs.NewLocalKeyAdaptor,
-		filecoin.ChainName: filecoin.NewLocalKeyAdaptor,
-	}
-	supportedChains := []string{ethereum.ChainName, ipfs.ChainName, filecoin.ChainName}
-	for _, c := range supportedChains {
-		if factory, ok := walletAdaptorFactoryMap[c]; ok {
-			dispatcher.registry[c] = factory(network)
-		}
-	}
-	return &dispatcher
-}
-
 func (d *Dispatcher) Interceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 	defer func() {
 		if e := recover(); e != nil {

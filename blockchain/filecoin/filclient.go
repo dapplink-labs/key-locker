@@ -5,7 +5,6 @@ import (
 
 	"github.com/savour-labs/key-locker/blockchain"
 	"github.com/savour-labs/key-locker/blockchain/fallback"
-	"github.com/savour-labs/key-locker/blockchain/multiclient"
 	"github.com/savour-labs/key-locker/config"
 	"github.com/savour-labs/key-locker/proto/keylocker"
 )
@@ -14,27 +13,10 @@ const ChainName = "Filcoin"
 
 type KeyAdaptor struct {
 	fallback.KeyAdaptor
-	clients *multiclient.MultiClient
 }
 
 func NewChainAdaptor(conf *config.Config) (blockchain.KeyAdaptor, error) {
-	return &KeyAdaptor{
-		clients: nil,
-	}, nil
-}
-
-func NewLocalKeyAdaptor(network config.NetWorkType) blockchain.KeyAdaptor {
-	return newKeyAdaptor()
-}
-
-func newKeyAdaptor() blockchain.KeyAdaptor {
-	return &KeyAdaptor{
-		clients: multiclient.New([]multiclient.Client{}),
-	}
-}
-
-func (a *KeyAdaptor) getClient() {
-
+	return &KeyAdaptor{}, nil
 }
 
 func (a *KeyAdaptor) GetSupportChain(req *keylocker.SupportChainReq) (*keylocker.SupportChainRep, error) {

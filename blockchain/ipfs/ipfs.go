@@ -7,7 +7,6 @@ import (
 
 	"github.com/savour-labs/key-locker/blockchain"
 	"github.com/savour-labs/key-locker/blockchain/fallback"
-	"github.com/savour-labs/key-locker/blockchain/multiclient"
 	"github.com/savour-labs/key-locker/config"
 	"github.com/savour-labs/key-locker/crypto"
 	"github.com/savour-labs/key-locker/db"
@@ -20,36 +19,19 @@ const ChainName = "Ipfs"
 
 type KeyAdaptor struct {
 	fallback.KeyAdaptor
-	clients    *multiclient.MultiClient
 	repo       *model.Repo
 	ipfsClient *Client
 }
 
 func NewChainAdaptor(conf *config.Config) (blockchain.KeyAdaptor, error) {
-	ipfsClient, err := New(context.Background(), conf.Ipfs.NetworkNode, conf.Ipfs.RepoPath)
+	ipfsClient, err := New(context.Background(), conf.Fullnode.Ipfs.NetworkNode, conf.Fullnode.Ipfs.RepoPath)
 	if err != nil {
 		return nil, err
 	}
-
 	return &KeyAdaptor{
-		clients:    nil,
 		repo:       model.NewRepo(db.InitDB(conf.Database)),
 		ipfsClient: ipfsClient,
 	}, nil
-}
-
-func NewLocalKeyAdaptor(network config.NetWorkType) blockchain.KeyAdaptor {
-	return newKeyAdaptor()
-}
-
-func newKeyAdaptor() blockchain.KeyAdaptor {
-	return &KeyAdaptor{
-		clients: multiclient.New([]multiclient.Client{}),
-	}
-}
-
-func (a *KeyAdaptor) getClient() {
-
 }
 
 func (a *KeyAdaptor) GetSupportChain(req *keylocker.SupportChainReq) (*keylocker.SupportChainRep, error) {

@@ -5,7 +5,6 @@ import (
 
 	"github.com/savour-labs/key-locker/blockchain"
 	"github.com/savour-labs/key-locker/blockchain/fallback"
-	"github.com/savour-labs/key-locker/blockchain/multiclient"
 	"github.com/savour-labs/key-locker/config"
 	"github.com/savour-labs/key-locker/proto/keylocker"
 )
@@ -14,35 +13,17 @@ const ChainName = "Ethereum"
 
 type KeyAdaptor struct {
 	fallback.KeyAdaptor
-	clients *multiclient.MultiClient
+	clients *KeyLockerClient
 }
 
 func NewChainAdaptor(conf *config.Config) (blockchain.KeyAdaptor, error) {
-	clients, err := newEthClients(conf)
+	client, err := NewKeyLockerClient(conf)
 	if err != nil {
 		return nil, err
 	}
-	clis := make([]multiclient.Client, len(clients))
-	for i, client := range clients {
-		clis[i] = client
-	}
 	return &KeyAdaptor{
-		clients: multiclient.New(clis),
+		clients: client,
 	}, nil
-}
-
-func NewLocalKeyAdaptor(network config.NetWorkType) blockchain.KeyAdaptor {
-	return newKeyAdaptor(newLocalEthClient(network))
-}
-
-func newKeyAdaptor(client *ethClient) blockchain.KeyAdaptor {
-	return &KeyAdaptor{
-		clients: multiclient.New([]multiclient.Client{client}),
-	}
-}
-
-func (a *KeyAdaptor) getClient() *ethClient {
-	return a.clients.BestClient().(*ethClient)
 }
 
 func (a *KeyAdaptor) GetSupportChain(req *keylocker.SupportChainReq) (*keylocker.SupportChainRep, error) {

@@ -20,6 +20,7 @@ contract KeyLocker is OwnableUpgradeable {
     onlyOwner
     {
         require((_keys.length > 0), "keys is empty");
+        require((_uuid.length > 0), "uuid is empty");
         socialKeys[_uuid] = _keys;
         emit keyLockerAppend(_uuid, _keys);
     }

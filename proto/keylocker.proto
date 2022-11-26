@@ -50,8 +50,6 @@ message GetSocialKeyReq {
   string chain = 2;
   string wallet_uuid = 3;
   string file_cid = 4;
-  string contract = 5;
-  string social_code = 6;
 }
 
 message GetSocialKeyRep {

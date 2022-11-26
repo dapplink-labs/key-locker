@@ -69,7 +69,6 @@ type LeyLockerServiceServer interface {
 	GetSupportChain(context.Context, *SupportChainReq) (*SupportChainRep, error)
 	SetSocialKey(context.Context, *SetSocialKeyReq) (*SetSocialKeyRep, error)
 	GetSocialKey(context.Context, *GetSocialKeyReq) (*GetSocialKeyRep, error)
-	mustEmbedUnimplementedLeyLockerServiceServer()
 }
 
 // UnimplementedLeyLockerServiceServer must be embedded to have forward compatible implementations.

@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/ethereum/go-ethereum v1.10.25
-	github.com/golang/protobuf v1.5.2
 	github.com/ipfs/go-ipfs-files v0.1.1
 	github.com/ipfs/interface-go-ipfs-core v0.7.0
 	github.com/ipfs/kubo v0.16.0
@@ -15,7 +14,6 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.0
 	github.com/urfave/cli/v2 v2.17.1
-	go.uber.org/atomic v1.10.0
 	google.golang.org/grpc v1.50.0
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/yaml.v2 v2.4.0
@@ -67,6 +65,7 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/mock v1.6.0 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/gopacket v1.1.19 // indirect
 	github.com/google/uuid v1.3.0 // indirect
@@ -228,6 +227,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.7.0 // indirect
 	go.opentelemetry.io/otel/trace v1.7.0 // indirect
 	go.opentelemetry.io/proto/otlp v0.16.0 // indirect
+	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/dig v1.14.1 // indirect
 	go.uber.org/fx v1.17.1 // indirect
 	go.uber.org/multierr v1.8.0 // indirect

@@ -36,6 +36,7 @@ type Config struct {
 	Server    *Server    `yaml:"server"`
 	RpcServer *RpcServer `yaml:"rpcserver"`
 	Chains    []string   `yaml:"chains"`
+	AesKey    string     `yaml:"aes_key"`
 }
 
 type Database struct {

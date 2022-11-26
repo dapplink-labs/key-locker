@@ -30,4 +30,5 @@ fullnode:
     repo_path: "/var/folders/s3/n3prrqcs7gqcv0yjtwv2jzx80000gp/T/ipfs-shell1796713389"
 
 chains: [Bitcoin, Ipfs, Filcoin]
+aes_key: '1234567890'
 

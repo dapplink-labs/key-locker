@@ -34,7 +34,7 @@ abi:
 		| jq '{abi,bytecode}' \
 		> packages/key-contract/abis/KeyLocker.json
 
-binding: abi
+binding-eth: abi
 	$(eval temp := $(shell mktemp))
 
 	cat packages/key-contract/abis/KeyLocker.json \
@@ -45,6 +45,22 @@ binding: abi
 		| abigen --pkg bindings \
 		--abi - \
 		--out blockchain/ethereum/bindings/keylocker.go \
+		--type KeyLocker \
+		--bin $(temp)
+
+	rm $(temp)
+
+binding-moonbeam: abi
+	$(eval temp := $(shell mktemp))
+
+	cat packages/key-contract/abis/KeyLocker.json \
+		| jq -r .bytecode > $(temp)
+
+	cat packages/key-contract/abis/KeyLocker.json \
+		| jq .abi \
+		| abigen --pkg bindings \
+		--abi - \
+		--out blockchain/moonbeam/bindings/keylocker.go \
 		--type KeyLocker \
 		--bin $(temp)
 

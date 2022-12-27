@@ -2,6 +2,7 @@ package keydispatcher
 
 import (
 	"context"
+	"github.com/savour-labs/key-locker/blockchain/moonbeam"
 	"runtime/debug"
 	"strings"
 
@@ -33,10 +34,11 @@ func New(conf *config.Config) (*Dispatcher, error) {
 	}
 	keyAdaptorFactoryMap := map[string]func(conf *config.Config) (blockchain.KeyAdaptor, error){
 		ethereum.ChainName: ethereum.NewChainAdaptor,
+		moonbeam.ChainName: moonbeam.NewChainAdaptor,
 		ipfs.ChainName:     ipfs.NewChainAdaptor,
 		filecoin.ChainName: filecoin.NewChainAdaptor,
 	}
-	supportedChains := []string{ethereum.ChainName, ipfs.ChainName, filecoin.ChainName}
+	supportedChains := []string{ethereum.ChainName, moonbeam.ChainName, ipfs.ChainName, filecoin.ChainName}
 	for _, c := range conf.Chains {
 		if factory, ok := keyAdaptorFactoryMap[c]; ok {
 			adaptor, err := factory(conf)

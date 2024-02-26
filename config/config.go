@@ -37,6 +37,7 @@ type Config struct {
 	RpcServer *RpcServer `yaml:"rpcserver"`
 	Chains    []string   `yaml:"chains"`
 	AesKey    string     `yaml:"aes_key"`
+	P2P       P2P        `yaml:"p2p"`
 }
 
 type Database struct {
@@ -59,6 +60,13 @@ type RpcServer struct {
 type Ipfs struct {
 	NetworkNode []string `yaml:"network_node"`
 	RepoPath    string   `yaml:"repo_path"`
+}
+
+type P2P struct {
+	ListenHost            string `yaml:"listen_host"`
+	ListenPort            string `yaml:"listen_port"`
+	RendezousString       string `yaml:"rendezous_string"`
+	HostPrivateKeyEnvFlag string `yaml:"host_private_key_env_flag"`
 }
 
 type NetWorkType int

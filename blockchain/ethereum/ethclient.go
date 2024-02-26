@@ -3,6 +3,10 @@ package ethereum
 import (
 	"context"
 	"crypto/ecdsa"
+	"math/big"
+	"strings"
+	"time"
+
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -12,9 +16,6 @@ import (
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/savour-labs/key-locker/blockchain/ethereum/bindings"
 	"github.com/savour-labs/key-locker/config"
-	"math/big"
-	"strings"
-	"time"
 )
 
 const (
@@ -136,7 +137,7 @@ func (kl KeyLockerClient) AppendSocialKey(uuid [UuidSize]byte, keys [][]byte) er
 		}
 	}
 	go confirmTxReceipt(tx.Hash())
-	if err != nil {
+	if err != nil { // 没用，应该是监听上一行的go
 		return err
 	}
 	return nil
@@ -144,7 +145,7 @@ func (kl KeyLockerClient) AppendSocialKey(uuid [UuidSize]byte, keys [][]byte) er
 }
 
 func (kl KeyLockerClient) QuerySocialKey(uuid [UuidSize]byte) ([][]byte, error) {
-	keys, err := kl.klContract.GetSocialKey(&bind.CallOpts{
+	keys, err := kl.klContract.GetSocialKey(&bind.CallOpts{ // 链上合约查
 		Pending: false,
 		Context: kl.context,
 	}, uuid)

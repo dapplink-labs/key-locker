@@ -139,7 +139,7 @@ func (a *KeyAdaptor) SetSocialKey(ctx context.Context, req *keylocker.SetSocialK
 	if err != nil {
 		return nil, fmt.Errorf("RSA.Encrypt fail, req, %v, err: [%w]", req, err)
 	}
-	cid, err := a.ipfsClient.AddFile(ctx, key)
+	cid, err := a.ipfsClient.AddFile(ctx, key) // 存ipfs
 	if err != nil {
 		return nil, fmt.Errorf("ipfsClient.AddFile fail, req, %v, err: [%w]", req, err)
 	}

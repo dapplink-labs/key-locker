@@ -105,11 +105,12 @@ func (a *KeyAdaptor) SetSocialKey(ctx context.Context, req *keylocker.SetSocialK
 	if err != nil {
 		return nil, fmt.Errorf("decrypt social code fail err: [%w]", err)
 	}
-	sec, err := a.repo.GetByUID(ctx, req.WalletUuid)
+	sec, err := a.repo.GetByUID(ctx, req.WalletUuid) // db相关
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, fmt.Errorf("repo.GetByUID fail, req, %v, err: [%w]", req, err)
 		}
+		// 报错内容：gorm.ErrRecordNotFound
 		// generate a new one
 		pri, pub = crypto.NewRsa("", "").CreatePkcs8Keys(2048)
 		// password  decrypt
@@ -118,19 +119,19 @@ func (a *KeyAdaptor) SetSocialKey(ctx context.Context, req *keylocker.SetSocialK
 		if err != nil {
 			return nil, fmt.Errorf("crypto.EncryptByAes fail, req, %v, pri, %s, err: [%w]", req, pri, err)
 		}
-		if e := a.repo.DB.Create(&model.Secret{
+		if e := a.repo.DB.Create(&model.Secret{ // 存db
 			KeyUuid: req.WalletUuid,
 			RsaPriv: string(encryptPriv),
 			RsaPub:  pub,
 		}).Error; e != nil {
 			return nil, fmt.Errorf("DB.Create fail, req, %v, err: [%w]", req, e)
 		}
-	} else {
-		priTmp, err := crypto.AesDecrypt([]byte(sec.RsaPriv), a.bytesCombine(dcrypted_pwd, dcrypted_scode))
+	} else { // err == nil
+		priTmp, err := crypto.AesDecrypt([]byte(sec.RsaPriv), a.bytesCombine(dcrypted_pwd, dcrypted_scode)) // 用req里的passwd解密db的值
 		if err != nil {
 			return nil, fmt.Errorf("crypto.DecryptByAes fail, req, %v, pri, %s, err: [%w]", req, sec.RsaPriv, err)
 		}
-		pri, pub = string(priTmp), sec.RsaPub
+		pri, pub = string(priTmp), sec.RsaPub // 都是db里的
 		encryptPriv = []byte(sec.RsaPriv)
 	}
 	// encrypt the key
@@ -143,12 +144,12 @@ func (a *KeyAdaptor) SetSocialKey(ctx context.Context, req *keylocker.SetSocialK
 	var uuidByte32 [UuidSize]byte
 	copy(uuidByte32[:], uuidByte)
 
-	if err := a.clients.AppendSocialKey(uuidByte32, [][]byte{key}); err != nil {
+	if err := a.clients.AppendSocialKey(uuidByte32, [][]byte{key}); err != nil { // 上链，合约调用和查询receipt
 		return nil, err
 	}
 
 	// insert into db
-	if e := a.repo.DB.Create(&model.Key{
+	if e := a.repo.DB.Create(&model.Key{ // 上链没问题，更新db
 		KeySecret: req.Password,
 		KeyUuid:   req.WalletUuid,
 	}).Error; e != nil {
